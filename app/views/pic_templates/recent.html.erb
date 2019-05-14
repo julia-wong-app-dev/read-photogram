@@ -1,1 +1,66 @@
-<p>hello, world!</p>
+<h1>Recent Photos</h1>
+
+<table>
+    <tr>
+        <!-- <th>represents table heading-->
+        
+        <th>Image</th>
+        <th>Caption</th>
+        <th>Owner</th>
+        <th>Posted</th>
+        <th>Likes</th>
+        
+    </tr>
+    
+    
+    <tr>
+            
+        <% pic = Photo.all.sample %>
+        <!--see models folder for values in datatables-->
+        <!--undefined method 'image for nil:NilClass means there are no rows in your data-->
+        <!--run rails dummy:reset to generate data-->
+        
+        <%# pic = Photo.order({ :created_at => :desc }).first %>
+        
+        <!--Add this to pictures_controller.rb-->
+        <%# photos = Photo.order({ :created_at => :desc }).limit(25) %>
+            
+    <% @photos.each do |pic| %>    
+        
+        <td>
+            <img src="<%= pic.image %>">
+        </td>
+        
+        <td>
+            <%= pic.caption %>
+        </td>
+            
+        <td>
+            <!--This returns error-->
+            <%#= User.where({ :id => pic.owner_id }).username %>
+                
+            <!--What class does .where return? ActiveRecord Relation, which is an array of however many records.-->
+            <!--We know there's only 1 record in the array. You have to call "first"--> 
+            <%= User.where({ :id => pic.owner_id }).at(0).username %>
+                
+            <!--These also work-->
+            <%#= User.where({ :id => pic.owner_id }).first.username %>    
+            <%#= User.where({ :id => pic.owner_id })[0].username %>
+            
+        </td>
+                
+        <td>
+            <%= ((Time.now - pic.created_at)/60/60/24).round %> days ago
+         </td>
+            
+        <td>
+            <%= pic.likes_count %>
+        </td>
+            
+        <td>
+           Show details
+        </td>
+    </tr>
+    <% end %>
+    
+</table>
